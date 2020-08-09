@@ -1,0 +1,71 @@
+import React from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
+import {  Item, Input, Label, Button, } from 'native-base';
+import * as firebase from 'firebase';
+
+export default class SignupScreen extends React.Component{
+  state={
+    email:"",
+    password:""
+  }
+
+  static navigationOptions = {
+    title:"Sign up"
+  }
+  userSignup(email,pass){
+    firebase.auth().createUserWithEmailAndPassword(email,pass)
+    .then(()=>{
+      this.props.navigation.replace("Login")
+    })
+    .catch(error=>{
+      Alert.alert(error.message)
+    })
+  }
+  
+    render(){
+        return (
+            <View style={styles.container}>
+              <View>
+                <Image source={require("../assets/logo.png")}/>
+              </View>
+              <Item floatingLabel>
+                <Label>Email Id</Label>
+               <Input
+                value={this.state.email} 
+                onChangeText={(text)=>this.setState({email:text})}
+                />
+              </Item>
+              <Item floatingLabel>
+                <Label>Password</Label>
+               <Input 
+                 secureTextEntry={true}
+                 value={this.state.password}
+                 onChangeText={(text)=>this.setState({password:text})}
+               />
+              </Item>
+              
+              <Button full rounded danger
+              style={{margin:10,justifyContent:"center"}}
+              onPress={()=>this.userSignup(this.state.email,this.state.password)}>
+              
+                <Text style={{fontSize:22,color:"white"}}>Sign Up</Text>
+              </Button>
+
+              <TouchableOpacity 
+               onPress={()=>this.props.navigation.navigate("Login")}>
+                <Text style={{textAlign:"center"}}>Already have an account?</Text>
+              </TouchableOpacity>
+
+            </View>
+          );
+    }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    justifyContent: "flex-start",
+    padding:13
+  },
+});
